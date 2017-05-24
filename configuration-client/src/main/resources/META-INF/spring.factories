@@ -1,0 +1,1 @@
+org.springframework.context.ApplicationContextInitializer=com.coba.ccb.configuration.initialisation.ConfigurationServerPropertySourceInitializer
