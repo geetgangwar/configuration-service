@@ -16,11 +16,11 @@ public class DriverFacadeImpl implements DriverFacade {
     @Named("proxyConfigurationFacade")
     ConfigurationFacade configurationFacade;
 
-    @Value("${fil.dev.FinoUrl.02}")
+    @Value("${stage01.environment01.serviceUrl.instance01}")
     private String oneOtherProperty;
 
     public String driver() {
-        String parameter = configurationFacade.getProperty("fil", "dev", "01", "FinoUrl");
+        String parameter = configurationFacade.getProperty("stage01", "environment01", "instance01", "serviceUrl");
 
         return parameter;
     }
