@@ -1,6 +1,7 @@
 package org.salgar.configuration.initialisation;
 
 import org.salgar.configuration.yaml.YamlFileConfiguration;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
@@ -17,7 +18,7 @@ import java.util.Map;
 
 @Configuration
 public class BootstapPropertySourceConfiguration implements ApplicationListener<ApplicationEvent>,
-        Ordered {
+        Ordered, InitializingBean {
     @Autowired
     ConfigurableEnvironment configurableEnvironment;
 
@@ -27,8 +28,8 @@ public class BootstapPropertySourceConfiguration implements ApplicationListener<
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
         if (event instanceof ContextRefreshedEvent) {
-            MutablePropertySources propertySources = configurableEnvironment.getPropertySources();
-            propertySources.addFirst(new MapPropertySource("bootstrap", prepareConfigurationMap()));
+            //MutablePropertySources propertySources = configurableEnvironment.getPropertySources();
+            //propertySources.addFirst(new MapPropertySource("bootstrap", prepareConfigurationMap()));
         }
     }
 
@@ -50,5 +51,9 @@ public class BootstapPropertySourceConfiguration implements ApplicationListener<
         return result;
     }
 
-
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		MutablePropertySources propertySources = configurableEnvironment.getPropertySources();
+        propertySources.addFirst(new MapPropertySource("bootstrap", prepareConfigurationMap()));
+	}
 }

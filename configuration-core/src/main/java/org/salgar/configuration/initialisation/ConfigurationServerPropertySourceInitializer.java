@@ -2,6 +2,7 @@ package org.salgar.configuration.initialisation;
 
 import org.salgar.configuration.ConfigurationContainer;
 import org.salgar.configuration.propertysource.ConfigServerPropertyResource;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
@@ -15,15 +16,18 @@ import org.springframework.core.env.MutablePropertySources;
 
 @Configuration
 public class ConfigurationServerPropertySourceInitializer implements ApplicationListener<ApplicationEvent>,
-        Ordered {
+        Ordered, InitializingBean {
 
     @Autowired
     ConfigurableEnvironment configurableEnvironment;
+    
+    @Autowired
+    ConfigurationContainer configurationContainer;
 
 
     private PropertySource getPropertySource() {
-        ConfigurationContainer.getInstance().refresh();
-        return new ConfigServerPropertyResource(ConfigurationContainer.getInstance());
+    	configurationContainer.refresh();
+        return new ConfigServerPropertyResource(configurationContainer);
     }
 
     @Override
@@ -34,8 +38,14 @@ public class ConfigurationServerPropertySourceInitializer implements Application
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
         if (event instanceof ContextRefreshedEvent) {
-            MutablePropertySources propertySources = configurableEnvironment.getPropertySources();
-            propertySources.addLast(getPropertySource());
+            //MutablePropertySources propertySources = configurableEnvironment.getPropertySources();
+            //propertySources.addLast(getPropertySource());
         }
     }
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		MutablePropertySources propertySources = configurableEnvironment.getPropertySources();
+        propertySources.addLast(getPropertySource());
+	}
 }
